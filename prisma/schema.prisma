@@ -32,3 +32,25 @@ model User {
   isAdmin   Boolean @default(false)
   createdAt DateTime @default(now())
 }
+
+
+model Order {
+  id            Int        @id @default(autoincrement())
+  name          String
+  location      String
+  phone         String
+  screenshot    String?    // Optional
+  paymentMethod String     // "instapay" or "cash"
+  createdAt     DateTime   @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  productId Int
+  name      String
+  price     Float
+  quantity  Int    @default(1)
+  order     Order  @relation(fields: [orderId], references: [id])
+  orderId   Int
+}
