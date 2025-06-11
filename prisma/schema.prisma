@@ -15,12 +15,14 @@ generator client {
 }
 
 model Product {
-  id    Int     @id @default(autoincrement())
-  name  String
-  slug  String  @unique
-  price Float
-  image String
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  price       Float
+  image       String
+  description String  @default("No description")
 }
+
 
 
 

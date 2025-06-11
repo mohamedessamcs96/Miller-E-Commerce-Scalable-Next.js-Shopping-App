@@ -1,13 +1,19 @@
 import ProductCard from '@/components/Product/ProductCard';
+import CartDrawer from '@/components/Product/CartDrawer';  // correct casing
+
 import jwt from 'jsonwebtoken';
 import { parse } from 'cookie';
 
 export default function Home({ products }) {
+
+
   return (
     <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
+       
       ))}
+       <CartDrawer />
     </main>
   );
 }
