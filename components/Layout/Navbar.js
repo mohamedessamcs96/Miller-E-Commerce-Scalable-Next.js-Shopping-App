@@ -50,7 +50,7 @@ export default function Navbar() {
             <div className="flex shrink-0 items-center">
               <img
                 className="h-10 w-auto"
-                src="images/miller.png"
+                src="/images/miller.png"
                 alt="Your Company"
               />
             </div>
@@ -115,10 +115,14 @@ export default function Navbar() {
 
                   Cart
                 </a>
-                <a href="/product/aboutme" className="text-sm px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white">
-                  Aboutme
+                <a href="/miller/contactus" className="text-sm px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white">
+                  Contact Us
+                </a>
+                <a onClick={handleLogout} className="text-sm px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white">
+                  logout
                 </a>
               </>
+              
             )}
           </div>
         </div>

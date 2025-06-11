@@ -1,150 +1,47 @@
-import React, { useState, useContext } from 'react';
-import { CartContext } from '@/lib/cart';
-import { useRouter } from 'next/router';
+// pages/api/checkout.js
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 
-const CheckoutForm = () => {
-  const router = useRouter();
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
 
-  const { cartItems, clearCart } = useContext(CartContext);
-  const [formData, setFormData] = useState({
-    name: '',
-    location: '',
-    phone: '',
-    paymentMethod: 'cash',
-    screenshot: null,
-  });
-  const [loading, setLoading] = useState(false);
+  const { name, location, phone, screenshot, paymentMethod, items } = req.body;
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'screenshot') {
-      setFormData({ ...formData, screenshot: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  //  Simple validation
+  if (!name || !location || !phone || !paymentMethod || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ message: 'Missing required fields or items' });
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (cartItems.length === 0) {
-      alert('Cart is empty!');
-      return;
-    }
-
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('location', formData.location);
-    data.append('phone', formData.phone);
-    data.append('paymentMethod', formData.paymentMethod);
-    data.append('cartItems', JSON.stringify(cartItems));
-
-    if (formData.paymentMethod === 'instapay' && formData.screenshot) {
-      data.append('screenshot', formData.screenshot);
-    }
-
-    setLoading(true);
-    try {
-          const res = await fetch('/api/products/order', {
-      method: 'POST',
-      body: data,
+  try {
+    const order = await prisma.order.create({
+      data: {
+        name,
+        location,
+        phone,
+        screenshot: screenshot || null, // Optional field
+        paymentMethod,
+        items: {
+          create: items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity ?? 1, // Default quantity = 1
+          })),
+        },
+      },
+      include: { items: true }, // Optional: include items in response
     });
 
-
-
-      const result = await res.json();
-      alert(result.message);
-
-      if (res.ok) {
-        // Clear form and cart if successful
-        setFormData({
-          name: '',
-          location: '',
-          phone: '',
-          paymentMethod: 'cash',
-          screenshot: null,
-        });
-        clearCart?.(); // if you have a clearCart function in context
-
-        // setFormData({ ... });
-        router.push('/product/success'); 
-
-
-      }
-    } catch (error) {
-      alert('Something went wrong. Please try again.');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
- <form 
-  onSubmit={handleSubmit}
-  className="space-y-4 max-w-md mx-auto p-4 bg-white shadow rounded"
->
-  <h2 className="text-xl font-bold mb-4">Checkout</h2>
-
-  <input
-    type="text"
-    name="name"
-    placeholder="Name"
-    onChange={handleChange}
-    value={formData.name}
-    required
-    className="w-full p-2 border rounded"
-  />
-  <input
-    type="text"
-    name="location"
-    placeholder="Location"
-    onChange={handleChange}
-    value={formData.location}
-    required
-    className="w-full p-2 border rounded"
-  />
-  <input
-    type="text"
-    name="phone"
-    placeholder="Phone"
-    onChange={handleChange}
-    value={formData.phone}
-    required
-    className="w-full p-2 border rounded"
-  />
-
-  <select
-    name="paymentMethod"
-    onChange={handleChange}
-    value={formData.paymentMethod}
-    className="w-full p-2 border rounded"
-  >
-    <option value="cash">Cash on Delivery</option>
-    <option value="instapay">Instapay</option>
-  </select>
-
-  {formData.paymentMethod === 'instapay' && (
-    <input
-      type="file"
-      name="screenshot"
-      accept="image/*"
-      onChange={handleChange}
-      className="w-full"
-    />
-  )}
-
-  <button  
-    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-    type="submit"
-    disabled={loading}
-  >
-    {loading ? 'Placing Order...' : 'Place Order'}
-  </button>
-</form>
-
-  );
-};
-
-export default CheckoutForm;
+    res.status(200).json({
+      message: 'Order created successfully',
+      orderId: order.id,
+      order,
+    });
+  } catch (error) {
+    console.error(' Checkout error:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+}

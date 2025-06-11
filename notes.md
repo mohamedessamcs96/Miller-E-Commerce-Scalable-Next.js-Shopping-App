@@ -86,3 +86,12 @@ useInsertionEffect fires before React makes changes to the DOM. Libraries can in
 
 
 npx prisma studio
+
+
+example : 
+[Frontend Form (pages)] → [POST /api/checkout] → [If OK → router.push('/success')]
+
+
+npm install @heroicons/react
+npm install @next-auth/prisma-adapter
+npm install framer-motion
