@@ -46,7 +46,7 @@ const CheckoutForm = () => {
 
     setLoading(true);
     try {
-          const res = await fetch('/api/products/order', {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products/order`, {
       method: 'POST',
       body: data,
     });

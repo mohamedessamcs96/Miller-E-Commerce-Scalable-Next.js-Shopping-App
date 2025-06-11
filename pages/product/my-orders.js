@@ -5,7 +5,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/products/orders')
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products/orders`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

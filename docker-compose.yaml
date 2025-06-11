@@ -8,6 +8,8 @@ services:
       - '3000:3000'
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/millerdb
+      - NEXT_PUBLIC_BASE_URL=http://app:3000
+      - IS_DOCKER_BUILD=true
     depends_on:
       - db
     volumes:

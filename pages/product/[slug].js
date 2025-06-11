@@ -3,6 +3,9 @@ import { useContext } from 'react';
 import { CartContext } from '@/lib/cart';
 import { useRouter } from 'next/router';
 
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 
 export default function Product({ product }) {
@@ -52,12 +55,10 @@ export default function Product({ product }) {
 }
 
 
-
-
-
 export async function getStaticPaths() {
-  const res = await fetch('http://localhost:3000/api/products');
-  const products = await res.json();
+  const products = await prisma.product.findMany({
+    select: { slug: true }, // only fetch slugs
+  });
 
   const paths = products.map((product) => ({
     params: { slug: product.slug },
@@ -67,11 +68,42 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const res = await fetch(`http://localhost:3000/api/products/${params.slug}`);
-  if (res.status === 404) {
+  const product = await prisma.product.findUnique({
+    where: { slug: params.slug },
+  });
+
+  if (!product) {
     return { notFound: true };
   }
-  const product = await res.json();
 
   return { props: { product } };
 }
+
+
+
+
+
+
+
+
+
+// export async function getStaticPaths() {
+//   const res = await fetch('http://localhost:3000/api/products');
+//   const products = await res.json();
+
+//   const paths = products.map((product) => ({
+//     params: { slug: product.slug },
+//   }));
+
+//   return { paths, fallback: false };
+// }
+
+// export async function getStaticProps({ params }) {
+//   const res = await fetch(`http://localhost:3000/api/products/${params.slug}`);
+//   if (res.status === 404) {
+//     return { notFound: true };
+//   }
+//   const product = await res.json();
+
+//   return { props: { product } };
+// }

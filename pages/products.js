@@ -31,7 +31,7 @@ export async function getServerSideProps({ req }) {
     jwt.verify(token, process.env.JWT_SECRET || 'MHMD96essam');
 
     // Fetch products only if authenticated
-    const res = await fetch('http://localhost:3000/api/products');
+    const res = await fetch('/api/products');
     if (!res.ok) {
       return { props: { products: [] } };
     }
