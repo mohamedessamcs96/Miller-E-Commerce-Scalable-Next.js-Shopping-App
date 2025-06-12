@@ -27,7 +27,7 @@ export default function Product({ product }) {
       <div className="grid md:grid-cols-2 gap-8 bg-white p-6 rounded-xl shadow-lg">
         <div className="w-full">
           <Image
-            src={product.image}
+            src={`/uploads/${product.image}`}
             alt={product.name}
             width={600}
             height={400}

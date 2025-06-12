@@ -1,7 +1,8 @@
 
 ---
 
-```markdown
+
+
 #  Miller E-commerce App
 
 A modern and responsive e-commerce web application built with **Next.js**, integrated with **PostgreSQL** as a backend database, and containerized using **Docker**. The app features product browsing, a shopping cart, and a clean UI built with **Tailwind CSS**.
@@ -19,22 +20,6 @@ A modern and responsive e-commerce web application built with **Next.js**, integ
 
 ---
 
-##  Project Structure
-
-```
-
-/
-├── components/       # Reusable UI components
-├── pages/            # Next.js pages (routing)
-├── prisma/           # Prisma schema and migrations
-├── public/           # Static assets and images
-├── styles/           # Global and custom CSS
-├── Dockerfile        # Docker build instructions
-├── docker-compose.yaml
-├── .env              # Environment variables
-└── README.md
-
-````
 
 ---
 
@@ -104,13 +89,3 @@ npx prisma generate
 
 ---
 
-##  License
-
-This project is licensed under the MIT License.
-
-```
-
----
-
-Would you like me to generate a version with your actual repo URL and image file path as well?
-```

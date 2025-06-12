@@ -1,34 +1,29 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: miller_app
-    ports:
-      - '3000:3000'
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/millerdb
-      - NEXT_PUBLIC_BASE_URL=http://app:3000
-      - IS_DOCKER_BUILD=true
-    depends_on:
-      - db
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: always
-
   db:
-    image: postgres:15
-    container_name: miller_db
+    image: postgres:14
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: millerdb
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+     - ./public/uploads:/app/public/uploads
+
+  app:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/millerdb?schema=public
+      JWT_SECRET: MHMD96essam
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
 
 volumes:
-  postgres_data:
+  pg_data:
