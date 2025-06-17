@@ -3,15 +3,19 @@ import CartDrawer from '@/components/Product/CartDrawer';
 import jwt from 'jsonwebtoken';
 import { parse } from 'cookie';
 import AboutSection from '@/components/Layout/AboutSection';
+import Layout from '../components/Layout/Layout';
 
 export default function Products({ products }) {
   return (
+   <Layout>
     <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
       <CartDrawer />
     </main>
+    </Layout>
+
   );
 }
 

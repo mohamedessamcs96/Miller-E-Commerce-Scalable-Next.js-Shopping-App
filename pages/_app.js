@@ -8,12 +8,10 @@ import { SessionProvider } from 'next-auth/react';
 
 //React Context
 export default function App({ Component, pageProps: { session, ...pageProps } }) {
-  return (
+ return (
     <SessionProvider session={session}>
       <CartProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Component {...pageProps} />
       </CartProvider>
     </SessionProvider>
   );

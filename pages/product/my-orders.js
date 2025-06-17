@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Layout from '../components/Layout/Layout';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -21,6 +22,7 @@ export default function OrdersPage() {
   if (loading) return <p className="p-6">Loading your orders...</p>;
 
   return (
+   <Layout >
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">My Orders</h1>
 
@@ -53,5 +55,6 @@ export default function OrdersPage() {
         ))
       )}
     </div>
+    </Layout>
   );
 }

@@ -1,29 +1,26 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./public/uploads:/app/public/uploads
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ecommerce
+    depends_on:
+      - db
+
   db:
     image: postgres:14
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: millerdb
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ecommerce
     volumes:
-     - ./public/uploads:/app/public/uploads
-
-  app:
-    build:
-      context: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/millerdb?schema=public
-      JWT_SECRET: MHMD96essam
-      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  pg_data:
+  postgres_data:

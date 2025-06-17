@@ -1,32 +1,26 @@
-import Image from 'next/image';
 import { useContext } from 'react';
-import { CartContext } from '@/lib/cart';
 import { useRouter } from 'next/router';
-
+import { CartContext } from '@/lib/cart';
 import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
 
 export default function Product({ product }) {
   const { addToCart } = useContext(CartContext);
   const router = useRouter();
 
-  // If product is undefined (e.g., build failed or fetch failed), show a fallback
   if (!product) {
     return <div className="text-center py-10">Product not found.</div>;
   }
 
   const handleAddToCart = () => {
     addToCart(product);
-     router.push('/product/cart'); 
+    router.push('/product/cart');
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
       <div className="grid md:grid-cols-2 gap-8 bg-white p-6 rounded-xl shadow-lg">
         <div className="w-full">
-          <Image
+          <img
             src={`/uploads/${product.image}`}
             alt={product.name}
             width={600}
@@ -54,20 +48,8 @@ export default function Product({ product }) {
   );
 }
 
-
-export async function getStaticPaths() {
-  const products = await prisma.product.findMany({
-    select: { slug: true }, // only fetch slugs
-  });
-
-  const paths = products.map((product) => ({
-    params: { slug: product.slug },
-  }));
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
+  const prisma = new PrismaClient();
   const product = await prisma.product.findUnique({
     where: { slug: params.slug },
   });
@@ -78,32 +60,3 @@ export async function getStaticProps({ params }) {
 
   return { props: { product } };
 }
-
-
-
-
-
-
-
-
-
-// export async function getStaticPaths() {
-//   const res = await fetch('http://localhost:3000/api/products');
-//   const products = await res.json();
-
-//   const paths = products.map((product) => ({
-//     params: { slug: product.slug },
-//   }));
-
-//   return { paths, fallback: false };
-// }
-
-// export async function getStaticProps({ params }) {
-//   const res = await fetch(`http://localhost:3000/api/products/${params.slug}`);
-//   if (res.status === 404) {
-//     return { notFound: true };
-//   }
-//   const product = await res.json();
-
-//   return { props: { product } };
-// }

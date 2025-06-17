@@ -1,5 +1,7 @@
 import ProductCard from '@/components/Product/ProductCard';
 import CartDrawer from '@/components/Product/CartDrawer';  // correct casing
+import Layout from '../components/Layout/Layout';
+import Stats from '@/components/Layout/Stats';
 
 import jwt from 'jsonwebtoken';
 import { parse } from 'cookie';
@@ -9,8 +11,9 @@ export default function Home({ products }) {
 
 
   return (
-    <main>
-    <AboutSection />
-    </main>
+    <Layout showStats={true}>
+      <AboutSection />
+      <Stats />
+    </Layout>
   );
 }

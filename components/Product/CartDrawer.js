@@ -48,7 +48,7 @@ export default function CartPage() {
                               <li key={index} className="flex py-6">
                                 <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200 relative">
                                   <Image
-                                    src={item.image}
+                                    src={`/${product.image}`}
                                     alt={item.name}
                                     fill
                                     className="object-cover"

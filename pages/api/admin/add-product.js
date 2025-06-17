@@ -23,19 +23,28 @@ const generateSlug = (text) =>
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
+  const uploadDir = path.join(process.cwd(), 'public/uploads');
+
+  // Ensure the uploads folder exists
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
   const form = new IncomingForm({
-    uploadDir: path.join(process.cwd(), 'public/uploads'),
+    uploadDir,
     keepExtensions: true,
     multiples: false,
   });
 
   form.parse(req, async (err, fields, files) => {
-    if (err) return res.status(500).json({ message: 'Upload failed.' });
+    if (err) {
+      console.error('Form parsing error:', err);
+      return res.status(500).json({ message: 'Upload failed.' });
+    }
 
     try {
       const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
-      const imagePath = imageFile.newFilename;
-      const imageUrl = `/uploads/${imagePath}`;
+      const imagePath = `uploads/${imageFile.newFilename}`;
 
       const name = Array.isArray(fields.name) ? fields.name[0] : fields.name;
       const price = parseFloat(Array.isArray(fields.price) ? fields.price[0] : fields.price);
@@ -47,15 +56,15 @@ export default async function handler(req, res) {
           name,
           slug,
           price,
-          image: imageUrl,
+          image: imagePath,
           description,
         },
       });
 
-      res.status(200).json({ message: 'Product added successfully' });
+      return res.status(200).json({ message: 'Product added successfully' });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+      console.error('Server error:', error);
+      return res.status(500).json({ message: 'Server error' });
     }
   });
 }

@@ -35,6 +35,7 @@ export default function AdminPanel() {
   };
 
   return (
+    
     <div className="max-w-xl mx-auto py-10 px-6 bg-white shadow-md rounded-lg">
       <h1 className="text-3xl font-semibold mb-6 text-center"> Add New Product</h1>
       <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">

@@ -1,12 +1,15 @@
 // components/Layout.js
 import Footer from './Footer';
 import Navbar from './Navbar';
-export default function Layout({ children }) {
+import Stats from './Stats' 
+
+export default function Layout({ children, showStats = false }) {
   return (
     <>
       <Navbar />
       <main>{children}</main>
-      <Footer/>
+      {showStats && <Stats />}
+      <Footer />
     </>
   );
 }
